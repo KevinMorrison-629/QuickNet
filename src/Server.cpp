@@ -190,7 +190,8 @@ namespace QNET
             {
                 if (pIncomingMsgs[i] && pIncomingMsgs[i]->m_cbSize > 0)
                 {
-                    std::string msg((const char *)pIncomingMsgs[i]->m_pData, pIncomingMsgs[i]->m_cbSize);
+                    std::vector<uint8_t> msg((const char *)pIncomingMsgs[i]->m_pData,
+                                             (const char *)pIncomingMsgs[i]->m_pData + pIncomingMsgs[i]->m_cbSize);
 
                     if (OnMessageReceived)
                     {

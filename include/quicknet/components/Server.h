@@ -40,7 +40,7 @@ namespace QNET
         /// Assign a function to this member to handle incoming messages.
         /// The function should take a HSteamNetConnection (the client's handle) and a
         /// const std::string& (the message content) as parameters.
-        std::function<void(HSteamNetConnection, const std::string &)> OnMessageReceived;
+        std::function<void(HSteamNetConnection, const std::vector<uint8_t> &)> OnMessageReceived;
 
     protected:
         /// @brief Handles connection status changes for the server.
