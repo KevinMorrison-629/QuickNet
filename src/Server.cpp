@@ -88,8 +88,8 @@ namespace QNET
 
     /// @brief Broadcasts a message to all currently connected clients.
     /// The message is sent reliably. Does nothing if the network interface is not available.
-    /// @param strMessage The message content to broadcast.
-    void Server::BroadcastMessage(const std::string &strMessage)
+    /// @param byteMessage The message content to broadcast.
+    void Server::BroadcastMessage(const std::vector<uint8_t> &byteMessage)
     {
         if (!m_pInterface)
             return;
@@ -98,7 +98,7 @@ namespace QNET
         // std::cout << "Broadcasting message: " << strMessage << std::endl; // Optional: for debugging
         for (HSteamNetConnection hConn : m_vecClients)
         {
-            m_pInterface->SendMessageToConnection(hConn, strMessage.c_str(), strMessage.length(),
+            m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(),
                                                   k_nSteamNetworkingSend_Reliable, nullptr);
         }
     }

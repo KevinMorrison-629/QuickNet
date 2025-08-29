@@ -55,12 +55,12 @@ namespace QNET
 
     /// @brief Sends a message to the connected server.
     /// The message is sent reliably. Does nothing if not connected.
-    /// @param strMessage The message content to send.
-    void Client::SendMessageToServer(const std::string &strMessage)
+    /// @param byteMessage The message content to send.
+    void Client::SendMessageToServer(const std::vector<uint8_t> &byteMessage)
     {
         if (!IsConnected())
             return;
-        m_pInterface->SendMessageToConnection(m_hConnection, strMessage.c_str(), strMessage.length(),
+        m_pInterface->SendMessageToConnection(m_hConnection, byteMessage.data(), byteMessage.size(),
                                               k_nSteamNetworkingSend_Reliable, nullptr);
     }
 

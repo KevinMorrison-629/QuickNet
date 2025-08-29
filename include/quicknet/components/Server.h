@@ -28,8 +28,8 @@ namespace QNET
 
         /// @brief Broadcasts a message to all connected clients.
         /// The message is sent reliably.
-        /// @param strMessage The message content to broadcast.
-        void BroadcastMessage(const std::string &strMessage);
+        /// @param byteMessage The message content to broadcast.
+        void BroadcastMessage(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives and processes pending messages from all connected clients.
         /// This method should be called regularly to handle incoming data.

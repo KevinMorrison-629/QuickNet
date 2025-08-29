@@ -23,8 +23,8 @@ namespace QNET
 
         /// @brief Sends a message to the connected server.
         /// The message is sent reliably.
-        /// @param strMessage The message content to send.
-        void SendMessageToServer(const std::string &strMessage);
+        /// @param byteMessage The message content to send.
+        void SendMessageToServer(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives pending messages from the server.
         /// Calls the OnMessageReceived callback for each message.
