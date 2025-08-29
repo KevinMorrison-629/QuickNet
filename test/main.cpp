@@ -21,8 +21,11 @@ int main()
 
     // --- 1. Set up the Server ---
     // The server's callback prints messages it receives from any client.
-    serverManager->OnMessageReceived = [](HSteamNetConnection hConn, const std::string &msg)
-    { std::cout << "✅ [Server] Received from client " << hConn << ": '" << msg << "'\n"; };
+    serverManager->OnMessageReceived = [](HSteamNetConnection hConn, const std::vector<uint8_t> &byteMsg)
+    {
+        std::string msg((const char *)byteMsg.data(), byteMsg.size());
+        std::cout << "✅ [Server] Received from client " << hConn << ": '" << msg << "'\n";
+    };
 
     // Initialize the server
     if (!serverManager->Initialize(PORT))
@@ -40,8 +43,11 @@ int main()
 
     // --- 2. Set up the Client ---
     // The client's callback prints messages it receives from the server.
-    clientManager->OnMessageReceived = [](const std::string &msg)
-    { std::cout << "📨 [Client] Received from server: '" << msg << "'\n"; };
+    clientManager->OnMessageReceived = [](const std::vector<uint8_t> &byteMsg)
+    {
+        std::string msg((const char *)byteMsg.data(), byteMsg.size());
+        std::cout << "📨 [Client] Received from server: '" << msg << "'\n";
+    };
 
     // Connect the client to the server
     if (!clientManager->Connect(SERVER_ADDRESS))
@@ -66,12 +72,14 @@ int main()
         {
             // Send a message from client to server
             std::string clientMessage = "Hello server! This is message #" + std::to_string(i + 1);
-            clientManager->SendMessageToServer(clientMessage);
+            std::vector<uint8_t> byteMsg(clientMessage.c_str(), clientMessage.c_str() + clientMessage.size());
+            clientManager->SendMessageToServer(byteMsg);
         }
 
         // The server broadcasts a message to all connected clients
         std::string serverMessage = "Public announcement #" + std::to_string(i + 1);
-        serverManager->BroadcastMessage(serverMessage);
+        std::vector<uint8_t> byteMsg(serverMessage.c_str(), serverMessage.c_str() + serverMessage.size());
+        serverManager->BroadcastMessage(byteMsg);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

@@ -28,8 +28,8 @@ namespace QNET
 
         /// @brief Broadcasts a message to all connected clients.
         /// The message is sent reliably.
-        /// @param strMessage The message content to broadcast.
-        void BroadcastMessage(const std::string &strMessage);
+        /// @param byteMessage The message content to broadcast.
+        void BroadcastMessage(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives and processes pending messages from all connected clients.
         /// This method should be called regularly to handle incoming data.
@@ -40,7 +40,7 @@ namespace QNET
         /// Assign a function to this member to handle incoming messages.
         /// The function should take a HSteamNetConnection (the client's handle) and a
         /// const std::string& (the message content) as parameters.
-        std::function<void(HSteamNetConnection, const std::string &)> OnMessageReceived;
+        std::function<void(HSteamNetConnection, const std::vector<uint8_t> &)> OnMessageReceived;
 
     protected:
         /// @brief Handles connection status changes for the server.

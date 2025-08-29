@@ -23,8 +23,8 @@ namespace QNET
 
         /// @brief Sends a message to the connected server.
         /// The message is sent reliably.
-        /// @param strMessage The message content to send.
-        void SendMessageToServer(const std::string &strMessage);
+        /// @param byteMessage The message content to send.
+        void SendMessageToServer(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives pending messages from the server.
         /// Calls the OnMessageReceived callback for each message.
@@ -38,7 +38,7 @@ namespace QNET
         /// @brief Callback function invoked when a message is received from the server.
         /// Assign a function to this member to handle incoming messages.
         /// The function should take a const std::string& (the message content) as a parameter.
-        std::function<void(const std::string &)> OnMessageReceived;
+        std::function<void(const std::vector<uint8_t> &)> OnMessageReceived;
 
     protected:
         /// @brief Handles connection status changes for the client.
