@@ -103,6 +103,19 @@ namespace QNET
         }
     }
 
+    /// @brief Sends a message to a specific client.
+    /// The message is sent reliably. Does nothing if the network interface is not available.
+    /// @param hConn The connection handle of the client.
+    /// @param byteMessage The message content to send.
+    void Server::SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)
+    {
+        if (!m_pInterface)
+            return;
+
+        m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(), k_nSteamNetworkingSend_Reliable,
+                                              nullptr);
+    }
+
     /// @brief Handles connection status changes.
     /// This method is called by the global connection status callback. It manages new client connections
     /// (accepting them), and handles disconnections by removing clients from the active list.

@@ -9,6 +9,7 @@ A C++ library for creating simple and fast client-server applications, built on 
 -   Modern C++17 interface.
 -   Simple, high-level abstractions for `Client` and `Server`.
 -   Callback-based message handling (`OnMessageReceived`).
+-   Send messages to all clients (`BroadcastMessage`) or a specific client (`SendMessageToClient`).
 -   Built on the reliable and performant GameNetworkingSockets library.
 
 ---
@@ -86,11 +87,11 @@ int main() {
     // Set a callback for when messages are received
     server.OnMessageReceived = [&](HSteamNetConnection hConn, const std::vector<uint8_t>& msg) {
         std::string message(msg.begin(), msg.end());
-        std::cout << "Server received: " << message << std::endl;
+        std::cout << "Server received: " << message << " from client " << hConn << std::endl;
         
-        // Broadcast the message to all clients
-        std::string broadcast_msg = "Server echoes: " + message;
-        server.BroadcastMessage(std::vector<uint8_t>(broadcast_msg.begin(), broadcast_msg.end()));
+        // Echo the message back to the client that sent it
+        std::string echo_msg = "Server echoes: " + message;
+        server.SendMessageToClient(hConn, std::vector<uint8_t>(echo_msg.begin(), echo_msg.end()));
     };
 
     // Initialize the server on port 27020
