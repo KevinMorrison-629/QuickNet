@@ -31,6 +31,12 @@ namespace QNET
         /// @param byteMessage The message content to broadcast.
         void BroadcastMessage(const std::vector<uint8_t> &byteMessage);
 
+        /// @brief Sends a message to a specific client.
+        /// The message is sent reliably.
+        /// @param hConn The connection handle of the client.
+        /// @param byteMessage The message content to send.
+        void SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage);
+
         /// @brief Receives and processes pending messages from all connected clients.
         /// This method should be called regularly to handle incoming data.
         void ReceiveMessages();

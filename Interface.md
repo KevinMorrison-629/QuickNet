@@ -105,6 +105,12 @@ Use the `Server` class to create a server that listens for incoming connections,
   - **Parameters**:
     - `byteMessage`: The message content to broadcast.
 
+- **`void SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Sends a message to a specific client. The message is sent reliably.
+  - **Parameters**:
+    - `hConn`: The connection handle of the client.
+    - `byteMessage`: The message content to send.
+
 - **`void ReceiveMessages()`**:
   - **Description**: Receives and processes pending messages from all connected clients. This method should be called regularly to handle incoming data.
 
