@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+#include <vector>
+
 #include <steam/steamnetworkingsockets.h>
 
 namespace QNET
@@ -23,6 +25,16 @@ namespace QNET
         /// This method should be called regularly to process incoming messages and connection status changes.
         void Poll();
 
+        /// @brief Sends a Reliable message to a specific connection. (Guarantees delivery and order)
+        /// @param hConn The connection handle.
+        /// @param byteMessage The message content to send.
+        void SendReliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage);
+
+        /// @brief Sends an Unreliable message to a specific connection. (Faster than reliable, no guarantees on delivery)
+        /// @param hConn The connection handle.
+        /// @param byteMessage The message content to send.
+        void SendUnreliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage);
+
     protected:
         /// @brief Pure virtual function to handle connection status changes.
         /// Derived classes must implement this method to process specific connection events.
@@ -35,6 +47,7 @@ namespace QNET
         /// @param pInfo Pointer to the SteamNetConnectionStatusChangedCallback_t structure.
         static void OnGlobalConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t *pInfo);
 
+    protected:
         /// @brief Pointer to the ISteamNetworkingSockets interface.
         ISteamNetworkingSockets *m_pInterface;
 

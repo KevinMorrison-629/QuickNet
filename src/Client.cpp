@@ -53,15 +53,18 @@ namespace QNET
         m_hConnection = k_HSteamNetConnection_Invalid;
     }
 
-    /// @brief Sends a message to the connected server.
-    /// The message is sent reliably. Does nothing if not connected.
+    /// @brief Sends an Unreliable message to the connected server.
     /// @param byteMessage The message content to send.
-    void Client::SendMessageToServer(const std::vector<uint8_t> &byteMessage)
+    void Client::SendUnreliableMessageToServer(const std::vector<uint8_t> &byteMessage)
     {
-        if (!IsConnected())
-            return;
-        m_pInterface->SendMessageToConnection(m_hConnection, byteMessage.data(), byteMessage.size(),
-                                              k_nSteamNetworkingSend_Reliable, nullptr);
+        SendUnreliableMessage(m_hConnection, byteMessage);
+    }
+
+    /// @brief Sends an Reliable message to the connected server.
+    /// @param byteMessage The message content to send.
+    void Client::SendReliableMessageToServer(const std::vector<uint8_t> &byteMessage)
+    {
+        SendReliableMessage(m_hConnection, byteMessage);
     }
 
     /// @brief Checks if the client is currently connected to a server.

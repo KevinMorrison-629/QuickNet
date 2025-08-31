@@ -73,13 +73,13 @@ int main()
             // Send a message from client to server
             std::string clientMessage = "Hello server! This is message #" + std::to_string(i + 1);
             std::vector<uint8_t> byteMsg(clientMessage.c_str(), clientMessage.c_str() + clientMessage.size());
-            clientManager->SendMessageToServer(byteMsg);
+            clientManager->SendReliableMessageToServer(byteMsg);
         }
 
         // The server broadcasts a message to all connected clients
         std::string serverMessage = "Public announcement #" + std::to_string(i + 1);
         std::vector<uint8_t> byteMsg(serverMessage.c_str(), serverMessage.c_str() + serverMessage.size());
-        serverManager->BroadcastMessage(byteMsg);
+        serverManager->BroadcastReliableMessage(byteMsg);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

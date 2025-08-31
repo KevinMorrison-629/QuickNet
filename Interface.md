@@ -27,16 +27,28 @@ The library offers both blocking and non-blocking methods for handling network e
 
 ## `ConnectionManager` Class
 
-This is the base class for both `Client` and `Server`. It handles the low-level network polling and is not meant to be instantiated directly by the user.
+This is the base class for both `Client` and `Server`. It handles the low-level network polling and provides core message-sending functionality.
 
 ### Use Case
 
-The `ConnectionManager` provides the core polling mechanism that drives the networking for both clients and servers.
+The `ConnectionManager` provides the core polling and messaging mechanism that drives the networking for both clients and servers. It is not meant to be instantiated directly.
 
 ### Public Functions
 
 - **`Poll()`**:
   - **Description**: Polls for network events. This method should be called regularly to process incoming messages and connection status changes.
+
+- **`void SendReliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Sends a reliable message to a specific connection (guarantees delivery and order).
+  - **Parameters**:
+    - **hConn**: The handle of the connection to send the message to.
+    - **byteMessage**: The message content to send.
+
+- **`void SendUnreliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Sends an unreliable message to a specific connection (faster, but no delivery guarantees).
+  - **Parameters**:
+    - **hConn**: The handle of the connection to send the message to.
+    - **byteMessage**: The message content to send.
 
 ---
 
@@ -59,8 +71,13 @@ Use the `Client` class to connect to a server, send and receive messages, and ma
 - **`void Disconnect()`**:
   - **Description**: Disconnects from the server.
 
-- **`void SendMessageToServer(const std::vector<uint8_t> &byteMessage)`**:
-  - **Description**: Sends a message to the connected server. The message is sent reliably.
+- **`void SendReliableMessageToServer(const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Sends a reliable message to the connected server.
+  - **Parameters**:
+    - `byteMessage`: The message content to send.
+
+- **`void SendUnreliableMessageToServer(const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Sends a unreliable message to the connected server.
   - **Parameters**:
     - `byteMessage`: The message content to send.
 
@@ -100,16 +117,15 @@ Use the `Server` class to create a server that listens for incoming connections,
 - **`void Stop()`**:
   - **Description**: Stops the server, disconnects all clients, and closes the listen socket.
 
-- **`void BroadcastMessage(const std::vector<uint8_t> &byteMessage)`**:
-  - **Description**: Broadcasts a message to all connected clients. The message is sent reliably.
+- **`void BroadcastReliableMessage(const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Broadcasts a reliable message to all connected clients.
   - **Parameters**:
     - `byteMessage`: The message content to broadcast.
 
-- **`void SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)`**:
-  - **Description**: Sends a message to a specific client. The message is sent reliably.
+- **`void BroadcastUnreliableMessage(const std::vector<uint8_t> &byteMessage)`**:
+  - **Description**: Broadcasts a unreliable message to all connected clients.
   - **Parameters**:
-    - `hConn`: The connection handle of the client.
-    - `byteMessage`: The message content to send.
+    - `byteMessage`: The message content to broadcast.
 
 - **`void ReceiveMessages()`**:
   - **Description**: Receives and processes pending messages from all connected clients. This method should be called regularly to handle incoming data.
