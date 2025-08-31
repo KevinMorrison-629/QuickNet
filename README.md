@@ -9,7 +9,7 @@ A C++ library for creating simple and fast client-server applications, built on 
 -   Modern C++17 interface.
 -   Simple, high-level abstractions for `Client` and `Server`.
 -   Callback-based message handling (`OnMessageReceived`).
--   Send messages to all clients (`BroadcastMessage`) or a specific client (`SendMessageToClient`).
+-   Send messages to all clients (`BroadcastReliableMessage` or `BroadcastUnreliableMessage`) or a specific client (`SendReliableMessage` or `SendUnreliableMessage`).
 -   Built on the reliable and performant GameNetworkingSockets library.
 
 ---
@@ -91,7 +91,7 @@ int main() {
         
         // Echo the message back to the client that sent it
         std::string echo_msg = "Server echoes: " + message;
-        server.SendMessageToClient(hConn, std::vector<uint8_t>(echo_msg.begin(), echo_msg.end()));
+        server.SendReliableMessage(hConn, std::vector<uint8_t>(echo_msg.begin(), echo_msg.end()));
     };
 
     // Initialize the server on port 27020
@@ -139,7 +139,7 @@ int main() {
 
         // Send a message
         std::string message = "Hello, server!";
-        client.SendMessageToServer(std::vector<uint8_t>(message.begin(), message.end()));
+        client.SendReliableMessageToServer(std::vector<uint8_t>(message.begin(), message.end()));
 
         // Poll for a few seconds to receive messages
         for (int i = 0; i < 5; ++i) {

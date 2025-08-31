@@ -21,10 +21,13 @@ namespace QNET
         /// @brief Disconnects from the server.
         void Disconnect();
 
-        /// @brief Sends a message to the connected server.
-        /// The message is sent reliably.
+        /// @brief Sends a reliable message to the connected server.
         /// @param byteMessage The message content to send.
-        void SendMessageToServer(const std::vector<uint8_t> &byteMessage);
+        void SendReliableMessageToServer(const std::vector<uint8_t> &byteMessage);
+
+        /// @brief Sends an unreliable message to the connected server.
+        /// @param byteMessage The message content to send.
+        void SendUnreliableMessageToServer(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives pending messages from the server.
         /// Calls the OnMessageReceived callback for each message.

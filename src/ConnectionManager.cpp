@@ -57,4 +57,30 @@ namespace QNET
         // status changes, which are then handled by the derived classes.
         m_pInterface->RunCallbacks();
     }
-}
+
+    /// @brief Sends a reliable message to a specific connection.
+    void ConnectionManager::SendReliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)
+    {
+        if (hConn == k_HSteamNetConnection_Invalid)
+            return;
+
+        if (!m_pInterface)
+            return;
+
+        m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(), k_nSteamNetworkingSend_Reliable,
+                                              nullptr);
+    }
+
+    /// @brief Sends an unreliable message to a specific connection.
+    void ConnectionManager::SendUnreliableMessage(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)
+    {
+        if (hConn == k_HSteamNetConnection_Invalid)
+            return;
+
+        if (!m_pInterface)
+            return;
+
+        m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(),
+                                              k_nSteamNetworkingSend_UnreliableNoDelay, nullptr);
+    }
+} // namespace QNET

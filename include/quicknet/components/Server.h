@@ -26,16 +26,13 @@ namespace QNET
         /// @brief Stops the server, disconnects all clients, and closes the listen socket.
         void Stop();
 
-        /// @brief Broadcasts a message to all connected clients.
-        /// The message is sent reliably.
+        /// @brief Broadcasts a reliable message to all connected clients.
         /// @param byteMessage The message content to broadcast.
-        void BroadcastMessage(const std::vector<uint8_t> &byteMessage);
+        void BroadcastReliableMessage(const std::vector<uint8_t> &byteMessage);
 
-        /// @brief Sends a message to a specific client.
-        /// The message is sent reliably.
-        /// @param hConn The connection handle of the client.
-        /// @param byteMessage The message content to send.
-        void SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage);
+        /// @brief Broadcasts an Unreliable message to all connected clients.
+        /// @param byteMessage The message content to broadcast.
+        void BroadcastUnreliableMessage(const std::vector<uint8_t> &byteMessage);
 
         /// @brief Receives and processes pending messages from all connected clients.
         /// This method should be called regularly to handle incoming data.

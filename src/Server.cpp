@@ -86,34 +86,26 @@ namespace QNET
         std::cout << "Server stopped." << std::endl;
     }
 
-    /// @brief Broadcasts a message to all currently connected clients.
-    /// The message is sent reliably. Does nothing if the network interface is not available.
+    /// @brief Broadcasts an Unreliable message to all currently connected clients.
+    /// Does nothing if the network interface is not available.
     /// @param byteMessage The message content to broadcast.
-    void Server::BroadcastMessage(const std::vector<uint8_t> &byteMessage)
+    void Server::BroadcastUnreliableMessage(const std::vector<uint8_t> &byteMessage)
     {
-        if (!m_pInterface)
-            return;
-
-        /// @brief Logs the message being broadcast.
-        // std::cout << "Broadcasting message: " << strMessage << std::endl; // Optional: for debugging
         for (HSteamNetConnection hConn : m_vecClients)
         {
-            m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(),
-                                                  k_nSteamNetworkingSend_Reliable, nullptr);
+            SendUnreliableMessage(hConn, byteMessage);
         }
     }
 
-    /// @brief Sends a message to a specific client.
-    /// The message is sent reliably. Does nothing if the network interface is not available.
-    /// @param hConn The connection handle of the client.
-    /// @param byteMessage The message content to send.
-    void Server::SendMessageToClient(HSteamNetConnection hConn, const std::vector<uint8_t> &byteMessage)
+    /// @brief Broadcasts a Reliable message to all currently connected clients.
+    /// Does nothing if the network interface is not available.
+    /// @param byteMessage The message content to broadcast.
+    void Server::BroadcastReliableMessage(const std::vector<uint8_t> &byteMessage)
     {
-        if (!m_pInterface)
-            return;
-
-        m_pInterface->SendMessageToConnection(hConn, byteMessage.data(), byteMessage.size(), k_nSteamNetworkingSend_Reliable,
-                                              nullptr);
+        for (HSteamNetConnection hConn : m_vecClients)
+        {
+            SendReliableMessage(hConn, byteMessage);
+        }
     }
 
     /// @brief Handles connection status changes.
