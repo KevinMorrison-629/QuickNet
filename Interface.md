@@ -4,13 +4,13 @@ This document outlines the public interface of the QuickNet library. It is inten
 
 ## Overview
 
-The QuickNet library provides a simple interface for creating client-server network applications using the SteamNetworkingSockets library. The main components are the `Client` and `Server` classes, which manage connections and data transfer.
+The QuickNet library provides a simple interface for creating client-server network applications using the SteamNetworkingSockets library. The main components are the `Client`, `Server`, and `HttpServer` classes.
 
 ## Threading Model
 
 The library offers both blocking and non-blocking methods for handling network events.
 
-- **`Server::Run()`**: This is a **blocking** function that enters an infinite loop to manage server operations. If you need your application's main thread to remain responsive, you should run the server in a separate thread. For example:
+- **`Server::Run()` & `HttpServer::Run()`**: These are **blocking** functions that enter an infinite loop to manage server operations. If you need your application's main thread to remain responsive, you should run the server in a separate thread. For example:
   ```cpp
   #include <thread>
   // ...
@@ -24,6 +24,40 @@ The library offers both blocking and non-blocking methods for handling network e
 - **`Poll()` and `ReceiveMessages()`**: These functions are **non-blocking**. They are designed to be called repeatedly in your main application loop to process network events without halting your program. This is the recommended approach for most client applications and for servers that need to perform other tasks on the main thread.
 
 ---
+
+## `HttpServer` Class
+
+Manages a simple, high-level HTTP server, built on top of `cpp-httplib`.
+
+### Use Case
+
+Use the `HttpServer` class to quickly create a web server for APIs or simple web pages. It handles the low-level HTTP protocol details, allowing you to focus on defining routes and handlers for `GET` and `POST` requests.
+
+### Public Functions
+
+- **`HttpServer()`**:
+   - **Description**: Constructs the server instance. Initializes the underlying `cpp-httplib` server and sets up default logging and error handlers.
+
+- **`void Get(const std::string& path, httplib::Server::Handler handler)`**:
+   - **Description**: Registers a function to handle HTTP GET requests for a given URL path.
+   - **Parameters**:
+    - **path**: The URL path to handle (e.g., "/").
+    - **handler**: A function (or lambda) that takes a `const httplib::Request&` and a `httplib::Response&` as parameters.
+
+- **`void Post(const std::string& path, httplib::Server::Handler handler)`**:
+   - **Description**: Registers a function to handle HTTP POST requests for a given URL path.
+   - **Parameters**:
+    - **path**: The URL path to handle (e.g., "/api/data").
+    - **handler**: A function (or lambda) that takes a `const httplib::Request&` and a `httplib::Response&` as parameters.
+
+- **`void Run(uint16_t port)`**:
+   - **Description**: Starts the server and listens for connections on the specified port. This is a blocking call that will run until `Stop()` is called or the program is terminated.
+   - **Parameters**:
+    - **port**: The port number to listen on.
+
+- **`void Stop()`**:
+   - **Description**: Stops the server if it is currently running.
+
 
 ## `ConnectionManager` Class
 
