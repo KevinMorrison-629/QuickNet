@@ -1,16 +1,18 @@
 # QuickNet
 
-A C++ library for creating simple and fast client-server applications, built on top of Valve's GameNetworkingSockets. It provides a straightforward, high-level interface for C++ applications.
+A C++ library for creating simple and fast client-server and web applications. It provides a straightforward, high-level interface for C++ applications, built on top of Valve's `GameNetworkingSockets` and the popular `cpp-httplib`.
 
 ---
 
 ## Features
 
 -   Modern C++17 interface.
--   Simple, high-level abstractions for `Client` and `Server`.
--   Callback-based message handling (`OnMessageReceived`).
+-   Simple, high-level abstractions for `Client`, `Server`, and `HttpServer`.
+-   Callback-based message handling for the `Server` and `Client`.
+-   Simple routing for `GET` and `POST` requests in `HttpServer`.
 -   Send messages to all clients (`BroadcastReliableMessage` or `BroadcastUnreliableMessage`) or a specific client (`SendReliableMessage` or `SendUnreliableMessage`).
--   Built on the reliable and performant GameNetworkingSockets library.
+-   `Server` and `Client` are built on the reliable and performant `GameNetworkingSockets` library.
+-   `HttpServer` is built on the lightweight and cross-platform `cpp-httplib` library.
 
 ---
 
@@ -31,9 +33,10 @@ A C++ library for creating simple and fast client-server applications, built on 
     ```
 
 2.  **Install dependencies using vcpkg:**
-    This project uses `vcpkg` to manage dependencies. The required `gamenetworkingsockets` dependency will be installed automatically if you have `vcpkg` integrated with your shell. If not, you can install it manually:
+    This project uses `vcpkg` to manage dependencies. The required `gamenetworkingsockets` and `cpp-httplib` dependencies will be installed automatically if you have `vcpkg` integrated with your shell. If not, you can install it manually:
     ```bash
     vcpkg install gamenetworkingsockets
+    vcpkg install cpp-httplib
     ```
 
 3.  **Configure and build with CMake:**
@@ -70,6 +73,45 @@ Make sure you also configure your main project with the `vcpkg.cmake` toolchain 
 ## Example Usage
 
 Here is a complete example of how to use QuickNet.
+
+### HttpServer
+
+This example shows how to start an HTTP server and handle GET/POST requests.
+
+```cpp
+#include <quicknet/quicknet.h>
+#include <iostream>
+
+int main() {
+    try {
+        QNET::HttpServer server;
+
+        // Define a handler for GET requests to the root URL "/"
+        server.Get("/", [](const httplib::Request& req, httplib::Response& res) {
+            std::string html_content = R"(
+                <!DOCTYPE html><html lang="en"><head><title>QuickNet</title></head><body>
+                    <h1>Welcome!</h1><p>Served by QNET::HttpServer.</p>
+                </body></html>
+            )";
+            res.set_content(html_content, "text/html");
+        });
+
+        // Define a handler for POST requests to "/api/echo"
+        server.Post("/api/echo", [](const httplib::Request& req, httplib::Response& res) {
+            // Echo the request body back to the client
+            res.set_content(req.body, "text/plain");
+        });
+        
+        // Start the server on port 8080. This is a blocking call.
+        server.Run(8080);
+
+    } catch (const std::exception& e) {
+        std::cerr << "A critical error occurred: " << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
+}
+```
 
 ### Server
 
