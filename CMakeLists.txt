@@ -12,6 +12,13 @@ project(${PROJECT_NAME} VERSION 0.0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# This is the definitive fix for the WSAPoll build errors on Windows.
+# It ensures the _WIN32_WINNT macro is defined for all source files before
+# any system headers are included.
+if(WIN32)
+    add_compile_definitions(_WIN32_WINNT=0x0601)
+endif()
+
 # You can also check here and error out if it’s missing:
 if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   message(FATAL_ERROR "Please invoke CMake with -DCMAKE_TOOLCHAIN_FILE=/path/to/vcpkg/scripts/buildsystems/vcpkg.cmake")
@@ -19,6 +26,7 @@ endif()
 
 # --- Find Dependencies ---
 find_package(GameNetworkingSockets CONFIG REQUIRED)
+find_package(httplib CONFIG REQUIRED)
 
 # --- Define the Library Target ---
 set(LIB_NAME "quicknet")
@@ -43,6 +51,7 @@ target_include_directories(${LIB_NAME} PUBLIC
 # also gets the necessary mongocxx settings.
 target_link_libraries(${LIB_NAME} PUBLIC
     GameNetworkingSockets::GameNetworkingSockets_s
+    httplib::httplib
 )
 
 # --- Add the subdirectory for the test executable ---

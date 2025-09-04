@@ -8,7 +8,7 @@ namespace QNET
 
         // Set up a default error handler
         m_server->set_error_handler(
-            [](const httplib::Request &, httplib::Response &res)
+            [](const Request &, Response &res)
             {
                 const char *fmt = "<h1>Error %d</h1><p>%s</p>";
                 char buf[BUFSIZ];
@@ -18,13 +18,25 @@ namespace QNET
 
         // Set up a default logger to print requests to the console
         m_server->set_logger(
-            [](const httplib::Request &req, const httplib::Response &res)
+            [](const Request &req, const Response &res)
             { std::cout << req.method << " " << req.remote_addr << " " << req.path << " -> " << res.status << std::endl; });
+
+        // Set up CORS headers by default for web development
+        m_server->set_default_headers({
+            {"Access-Control-Allow-Origin", "*"},
+            {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"},
+            {"Access-Control-Allow-Headers", "Content-Type"},
+        });
+        m_server->Options(".*",
+                          [](const Request &, Response &res)
+                          {
+                              res.status = 204; // No Content
+                          });
     }
 
     HttpServer::~HttpServer() { Stop(); }
 
-    void HttpServer::Get(const std::string &path, httplib::Server::Handler handler)
+    void HttpServer::Get(const std::string &path, Handler handler)
     {
         if (m_server)
         {
@@ -32,12 +44,24 @@ namespace QNET
         }
     }
 
-    void HttpServer::Post(const std::string &path, httplib::Server::Handler handler)
+    void HttpServer::Post(const std::string &path, Handler handler)
     {
         if (m_server)
         {
             m_server->Post(path.c_str(), handler);
         }
+    }
+
+    bool HttpServer::ServeStaticFiles(const std::string &mount_point, const std::string &dir_path)
+    {
+        auto res = m_server->set_mount_point(mount_point.c_str(), dir_path.c_str());
+        if (!res)
+        {
+            std::cerr << "Error: The directory '" << dir_path << "' for static files could not be found." << std::endl;
+            return false;
+        }
+        std::cout << "Serving static files from '" << dir_path << "' at URL '" << mount_point << "'." << std::endl;
+        return true;
     }
 
     void HttpServer::Run(uint16_t port)
