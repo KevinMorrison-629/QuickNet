@@ -46,6 +46,8 @@ namespace QNET
 
         void Put(const std::string &path, Handler handler);
 
+        void Delete(const std::string &path, Handler handler);
+
         /// @brief Sets a directory to be served as static files.
         /// @param mount_point The URL path to serve from (e.g., "/").
         /// @param dir_path The local filesystem path to the files (e.g., "../frontend/build").
