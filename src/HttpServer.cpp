@@ -40,7 +40,7 @@ namespace QNET
     {
         if (m_server)
         {
-            m_server->Get(path.c_str(), handler);
+            m_server->Get(path_to_regex(path), handler);
         }
     }
 
@@ -48,7 +48,7 @@ namespace QNET
     {
         if (m_server)
         {
-            m_server->Post(path.c_str(), handler);
+            m_server->Post(path_to_regex(path), handler);
         }
     }
 
@@ -56,7 +56,7 @@ namespace QNET
     {
         if (m_server)
         {
-            m_server->Put(path.c_str(), handler);
+            m_server->Put(path_to_regex(path), handler);
         }
     }
 
@@ -64,7 +64,7 @@ namespace QNET
     {
         if (m_server)
         {
-            m_server->Delete(path.c_str(), handler);
+            m_server->Delete(path_to_regex(path), handler);
         }
     }
 
@@ -100,4 +100,13 @@ namespace QNET
     }
 
     void HttpServer::log_message(const std::string &msg) { std::cerr << "ERROR: " << msg << std::endl; }
+
+    // This helper function converts a path with :params into a regular expression
+    // that httplib can use to capture the parameters.
+    // Example: "/api/collection/:userId" becomes "/api/collection/([^/]+)"
+    std::string HttpServer::path_to_regex(const std::string &path)
+    {
+        std::regex pattern(":([a-zA-Z0-9_]+)");
+        return std::regex_replace(path, pattern, "([^/]+)");
+    }
 } // namespace QNET

@@ -67,6 +67,12 @@ namespace QNET
         /// @param msg The message to log.
         void log_message(const std::string &msg);
 
+        /// @brief Convert a path with :params into a regular expression that httplib can use to capture the parameters.
+        /// Example: "/api/collection/:userId" becomes "/api/collection/([^/]+)"
+        /// @param path path (optionally with :params)
+        /// @return regular expression conversion of the path
+        std::string path_to_regex(const std::string &path);
+
         /// @brief The underlying httplib server instance.
         /// @details std::unique_ptr is used to manage its lifetime.
         std::unique_ptr<httplib::Server> m_server;
