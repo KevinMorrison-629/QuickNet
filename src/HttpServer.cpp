@@ -52,6 +52,14 @@ namespace QNET
         }
     }
 
+    void HttpServer::Put(const std::string &path, Handler handler)
+    {
+        if (m_server)
+        {
+            m_server->Put(path.c_str(), handler);
+        }
+    }
+
     bool HttpServer::ServeStaticFiles(const std::string &mount_point, const std::string &dir_path)
     {
         auto res = m_server->set_mount_point(mount_point.c_str(), dir_path.c_str());
