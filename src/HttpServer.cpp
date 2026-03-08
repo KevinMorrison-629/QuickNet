@@ -24,11 +24,11 @@ namespace QNET
         // Set up CORS headers by default for web development
         m_server->set_default_headers({
             {"Access-Control-Allow-Origin", "*"},
-            {"Access-Control-Allow-Methods", "POST, GET, OPTIONS"},
-            {"Access-Control-Allow-Headers", "Content-Type"},
+            {"Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE"},
+            {"Access-Control-Allow-Headers", "Content-Type, Authorization"},
         });
         m_server->Options(".*",
-                          [](const Request &, Response &res)
+                          [](const Request &req, Response &res)
                           {
                               res.status = 204; // No Content
                           });
