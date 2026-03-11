@@ -8,27 +8,46 @@ namespace QNET
 
         // Set up a default error handler
         m_server->set_error_handler(
-            [](const Request &, Response &res)
+            [](const httplib::Request &req, httplib::Response &res)
             {
+                std::cerr << "[HTTP ERROR] Status: " << res.status << " for " << req.method << " " << req.path << std::endl;
                 const char *fmt = "<h1>Error %d</h1><p>%s</p>";
                 char buf[BUFSIZ];
                 snprintf(buf, sizeof(buf), fmt, res.status, httplib::status_message(res.status));
                 res.set_content(buf, "text/html");
             });
 
-        // Set up a default logger to print requests to the console
+        // Set up a default logger to print requests and headers to the console
         m_server->set_logger(
-            [](const Request &req, const Response &res)
-            { std::cout << req.method << " " << req.remote_addr << " " << req.path << " -> " << res.status << std::endl; });
+            [](const httplib::Request &req, const httplib::Response &res) {
+                std::cout << "------------------------------------------------" << std::endl;
+                std::cout << "REQUEST: " << req.method << " " << req.path << " -> STATUS: " << res.status << std::endl;
+                std::cout << "HEADERS:" << std::endl;
+                for (const auto &header : req.headers) {
+                    std::cout << "  " << header.first << ": " << header.second << std::endl;
+                }
+                if (!req.body.empty()) {
+                    std::cout << "BODY: " << (req.body.length() > 100 ? req.body.substr(0, 100) + "..." : req.body) << std::endl;
+                }
+                std::cout << "------------------------------------------------" << std::endl;
+            });
+
+        // Handle Expect: 100-continue to avoid potential 501 Not Implemented errors
+        m_server->set_expect_100_continue_handler(
+            [](const httplib::Request &req, httplib::Response &res) {
+                return 100; // Continue
+            });
 
         // Set up CORS headers by default for web development
         m_server->set_default_headers({
             {"Access-Control-Allow-Origin", "*"},
-            {"Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE"},
-            {"Access-Control-Allow-Headers", "Content-Type, Authorization"},
+            {"Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, PATCH"},
+            {"Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With"},
+            {"Access-Control-Max-Age", "3600"},
         });
+
         m_server->Options(".*",
-                          [](const Request &req, Response &res)
+                          [](const httplib::Request &req, httplib::Response &res)
                           {
                               res.status = 204; // No Content
                           });
