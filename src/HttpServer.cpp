@@ -17,24 +17,15 @@ namespace QNET
                 res.set_content(buf, "text/html");
             });
 
-        // Set up a default logger to print requests and headers to the console
+        // Set up a default logger to print requests to the console
         m_server->set_logger(
-            [](const httplib::Request &req, const httplib::Response &res) {
-                std::cout << "------------------------------------------------" << std::endl;
-                std::cout << "REQUEST: " << req.method << " " << req.path << " -> STATUS: " << res.status << std::endl;
-                std::cout << "HEADERS:" << std::endl;
-                for (const auto &header : req.headers) {
-                    std::cout << "  " << header.first << ": " << header.second << std::endl;
-                }
-                if (!req.body.empty()) {
-                    std::cout << "BODY: " << (req.body.length() > 100 ? req.body.substr(0, 100) + "..." : req.body) << std::endl;
-                }
-                std::cout << "------------------------------------------------" << std::endl;
-            });
+            [](const Request &req, const Response &res)
+            { std::cout << req.method << " " << req.remote_addr << " " << req.path << " -> " << res.status << std::endl; });
 
         // Handle Expect: 100-continue to avoid potential 501 Not Implemented errors
         m_server->set_expect_100_continue_handler(
-            [](const httplib::Request &req, httplib::Response &res) {
+            [](const httplib::Request &req, httplib::Response &res)
+            {
                 return 100; // Continue
             });
 
