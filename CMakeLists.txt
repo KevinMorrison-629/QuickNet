@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # It ensures the _WIN32_WINNT macro is defined for all source files before
 # any system headers are included.
 if(WIN32)
-    add_compile_definitions(_WIN32_WINNT=0x0601)
+    add_compile_definitions(_WIN32_WINNT=0x0A00)
 endif()
 
 # You can also check here and error out if it’s missing:
