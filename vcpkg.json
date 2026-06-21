@@ -3,6 +3,9 @@
     "version-string": "0.0.1",
     "dependencies": [
         "gamenetworkingsockets",
-        "cpp-httplib"
+        {
+            "name": "cpp-httplib",
+            "features": ["openssl"]
+        }
     ]
 }
